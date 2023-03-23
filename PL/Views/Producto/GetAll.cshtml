@@ -1,0 +1,108 @@
+﻿@model ML.Producto
+@{
+    ViewBag.Title = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="text-center">
+            <h2>Producto</h2>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <h5>Seleccione un Producto para editar  o presione "Agregar para registrar uno nuevo"</h5>
+            <hr />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+     <div style="float:right">
+        @Html.ActionLink("Agregar", "Form", "Producto", htmlAttributes: new { @class = "btn btn-success" })
+    </div>
+</div>
+<hr />
+<div class="row">
+    @if (Model.Productos != null)
+    {
+        //tabla
+        <table class="table table-bordered table-responsive">
+            <thead>
+                <tr>
+                    <td class="text-center" style=" font-weight:bold;">Editar</td>
+
+                    <td class="hidden">IdProducto</td>
+                    <td class="text-center" style=" font-weight:bold;">Nombre</td>
+
+                    <td class="text-center" style=" font-weight:bold;">PrecioUnitario</td>
+                    <td class="text-center" style=" font-weight:bold;">Stock</td>
+                    <td class="text-center" style=" font-weight:bold;">Descripcion</td>
+                    
+
+                    <td class="text-center" style=" font-weight:bold;">Eliminar</td>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (ML.Producto producto in Model.Productos)
+                {
+                    <tr>
+                        <td class="text-center"><a class="btn btn-warning glyphicon glyphicon-edit" href="@Url.Action("Form", "Usuario", new { IdProducto = producto.IdProducto })"></a></td>
+
+                        <td class="hidden">@producto.IdProducto</td>
+                        <td>@producto.Nombre</td>
+
+                        
+                        <td>@producto.PrecioUnitario</td>
+                        <td>@producto.Stock</td>
+                        <td>@producto.Descripcion</td>
+                       
+
+
+                        <td class="text-center"><a class="btn btn-danger glyphicon glyphicon-trash" href="@Url.Action("Delete", "Usuario", new { IdProducto = producto.IdProducto })" onclick="return confirm('Estas seguro que deseas eliminar este registro?');"></a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">Ocurrio un error al realizar la consulta </div>
+    }
+</div>
+ </div>
+
+ 
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/dataTables.material.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('#tblProducto').DataTable({
+            searching: false,
+            "lengthMenu": [[1, 10, 15, 20, -1], [5, 10, 15, 20, "All"]],
+            autoWidth: false,
+            columnDefs: [
+                {
+                    targets: ['_all'],
+                    className: 'mdc-data-table__cell',
+                },
+            ],
+            language: {
+                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
+            },
+         });
+    });
+    </script>
+    }

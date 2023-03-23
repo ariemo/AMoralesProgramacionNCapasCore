@@ -1,0 +1,168 @@
+﻿@model ML.Usuario
+@{
+    ViewBag.Title = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="text-center">
+            <h2>Usuario</h2>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <h5>Seleccione un Usuario para editar  o presione "Agregar para registrar uno nuevo"</h5>
+            <hr />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div style="float:right">
+        @Html.ActionLink("Agregar", "Form", "Usuario", htmlAttributes: new { @class = "btn btn-success" })
+    </div>
+</div>
+<hr />
+<div class="row">
+    @if (Model.Usuarios != null)
+    {
+        //tabla
+        <table class="table table-bordered table-responsive">
+            <thead>
+                <tr>
+                    <td class="text-center" style=" font-weight:bold;">Editar</td>
+
+                    <td class="hidden">IdUsuario</td>
+                    <td class="text-center" style=" font-weight:bold;">Nombre</td>
+
+                    <td class="text-center" style=" font-weight:bold;">Telefono</td>
+                    <td class="text-center" style=" font-weight:bold;">Password</td>
+                    <td class="text-center" style=" font-weight:bold;">UserName</td>
+                    <td class="text-center" style=" font-weight:bold;">Email</td>
+                    <td class="text-center" style=" font-weight:bold;">Fecha de Nacimiento</td>
+                    <td class="text-center" style=" font-weight:bold;">Sexo</td>
+                    <td class="text-center" style=" font-weight:bold;">Celular</td>
+                    <td class="text-center" style=" font-weight:bold;">CURP</td>
+                    <td class="text-center" style=" font-weight:bold;">Tipo de Usuario</td>
+                    <td class="text-center" style=" font-weight:bold;">Imagen</td>
+
+                    <td class="text-center" style=" font-weight:bold;">Eliminar</td>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (ML.Usuario usuario in Model.Usuarios)
+                {
+                    <tr>
+                        <td class="text-center"><a class="btn btn-warning glyphicon glyphicon-edit" href="@Url.Action("Form", "Usuario", new { IdUsuario = usuario.IdUsuario })"></a></td>
+
+                        <td class="hidden">@usuario.IdUsuario</td>
+                        <td>@usuario.Nombre @usuario.ApellidoPaterno @usuario.ApellidoMaterno</td>
+
+
+                        <td>@usuario.Telefono</td>
+                        <td>@usuario.Password</td>
+                        <td>@usuario.UserName</td>
+                        <td class="hidden">@usuario.Rol.IdRol</td>
+                        <td>@usuario.Email</td>
+                        <td>@usuario.FechaNacimiento</td>
+                        <td>@usuario.Sexo</td>
+                        <td>@usuario.Celular</td>
+                        <td>@usuario.CURP</td>
+                        <td>@usuario.Rol.Nombre </td>
+                        <td> @if (usuario.Imagen != null)
+                                {
+
+                                    <img id="Img" src="data:image/*;base64,@usuario.Imagen" style="width:250px ; height:250px" />
+
+                                }
+                                else
+                                {
+                                    <img id="Img" src="~/Imagenes/SinImagen.png" style="width:250px ; height:250px" />
+                                }
+                        </td>
+                         @if (usuario.Status)
+                            {
+                                <td style="text-align: center; vertical-align: middle;">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked onchange="ChangeStatus(@usuario.IdUsuario, this)">
+                                    </div>
+                                </td>
+                            }
+                            else
+                            {
+                                <td style="text-align: center; vertical-align: middle;">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onchange="ChangeStatus(@usuario.IdUsuario, this);">
+                                    </div>
+                                </td>
+                            }
+
+                        <td class="text-center"><a class="btn btn-danger glyphicon glyphicon-trash" href="@Url.Action("Delete", "Usuario", new { IdUsaurio = usuario.IdUsuario })" onclick="return confirm('Estas seguro que deseas eliminar este registro?');"></a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">Ocurrio un error al realizar la consulta </div>
+    }
+  </div>
+</div>
+
+ 
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/dataTables.material.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('#tblAlumno').DataTable({
+            searching: false,
+            "lengthMenu": [[1, 10, 15, 20, -1], [5, 10, 15, 20, "All"]],
+            autoWidth: false,
+            columnDefs: [
+                {
+                    targets: ['_all'],
+                    className: 'mdc-data-table__cell',
+                },
+            ],
+            language: {
+                url: "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
+            },
+         });
+    });
+    function ChangeStatus(idUsuario,e){
+        var status = e.checked
+         $.ajax({
+                type: 'POST',
+                url: '@Url.Action("CambiarStatus")',
+                dataType: 'json',
+                data: {idUsuario, status},
+                success: {               },
+                error: function (ex) {
+                    alert('Failed.' + ex);
+                }
+            });
+    }
+
+    $(document).ready(function Animar(){
+        $('#prueba').hover(function(){
+            $('#prueba').addClass('fa-beat');
+        },
+        function(){
+            $('#prueba').removeClass('fa-beat');
+        });
+    });
+    </script>
+}
